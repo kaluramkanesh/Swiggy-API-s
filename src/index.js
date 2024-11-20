@@ -76,6 +76,30 @@ app.get("/images/get", async (req, res) => {
         return res.status(500).json({ status: false, message: `Error ${error.message}` })
     }
 })
+
+app.get("/image/logo", async (req, res) => {
+    try {
+        const uploadPath = path.join(__dirname, "logo"); // Path to the uploads directory
+
+        // Read all files from the uploads directory
+        fs.readdir(uploadPath, (err, files) => {
+            if (err) {
+                return res.status(500).json({ status: false, message: `Error reading files: ${err.message}` });
+            }
+
+            // Generate objects with file name and URL
+            const fileUrls = files.map(file => ({
+                name: file, // File name
+                images: `${req.protocol}://${req.get("host")}/uploads/${file}` // File URL
+            }));
+            // Respond with the list of file URLs
+            // return res.status(200).json({ status: true, images: fileUrls });
+            return res.status(200).send(fileUrls)
+        });
+    } catch (error) {
+        return res.status(500).json({ status: false, message: `Error ${error.message}` })
+    }
+})
 app.get("/images/get/restaurent", async (req, res) => {
     try {
         const arr = [
